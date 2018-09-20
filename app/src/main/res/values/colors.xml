@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorWindowBackgroundLight">#F4F4F6</color>
+    <color name="colorWindowBackgroundDark">#33343B</color>
+
+    <color name="colorPrimary">#79fcd0</color>
+    <color name="colorPrimaryDark">#63ceaa</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorPrimaryAlt">#314560</color>
+    <color name="colorPrimaryDarkAlt">#21406b</color>
+    <color name="colorAccentAlt">#3f825d</color>
+
+    <color name="colorPrimaryFluffPink">#f7adc8</color>
+    <color name="colorPrimaryDarkFluffPink">#d897af</color>
+    <color name="colorAccentFluffPink">#a9f5fc</color>
+</resources>

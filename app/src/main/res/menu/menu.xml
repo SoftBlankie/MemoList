@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_edit"
+        android:icon="@drawable/edit_icon"
+        android:title="Edit"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/sort_icon"
+        android:title="Sort"
+        app:showAsAction="always" >
+
+        <menu>
+
+            <item
+                android:id="@+id/sort_importance"
+                android:title="Sort Importance"
+                />
+
+            <item
+                android:id="@+id/sort_alphabetical"
+                android:title="Sort Alphabet"
+                />
+
+            <item
+                android:id="@+id/sort_date_edited"
+                android:title="Sort Date Edit"
+                />
+
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/action_info"
+        android:title="Info"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_help"
+        android:title="Help"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="Settings"
+        app:showAsAction="never" />
+
+</menu>

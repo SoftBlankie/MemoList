@@ -1,0 +1,40 @@
+<resources>
+    <!-- Light base activity theme -->
+    <style name="ActivityTheme.Primary.Base.Light" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="primaryTextColor">#33343B</item>
+        <item name="secondaryTextColor">#96F4F4F6</item>
+        <item name="backgroundCardColor">#FFFF</item>
+        <item name="dividerColor">#F2F2F3</item>
+    </style>
+    <!-- Dark base activity theme -->
+    <style name="ActivityTheme.Primary.Base.Dark" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="primaryTextColor">#6c7a8e</item>
+        <item name="secondaryTextColor">#8033343B</item>
+        <item name="backgroundCardColor">#28292e</item>
+        <item name="dividerColor">#F2F2F3</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppThemeLight" parent="ActivityTheme.Primary.Base.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorWindowBackgroundLight</item>
+    </style>
+    <style name="AppThemeDark" parent="ActivityTheme.Primary.Base.Dark">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryAlt</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkAlt</item>
+        <item name="colorAccent">@color/colorAccentAlt</item>
+        <item name="android:windowBackground">@color/colorWindowBackgroundDark</item>
+    </style>
+    <style name="AppThemeFluffPink" parent="ActivityTheme.Primary.Base.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryFluffPink</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkFluffPink</item>
+        <item name="colorAccent">@color/colorAccentFluffPink</item>
+        <item name="android:windowBackground">@color/colorWindowBackgroundLight</item>
+    </style>
+
+</resources>
