@@ -74,7 +74,6 @@ public class main extends AppCompatActivity {
     protected ArrayList<Integer> categoryCheckedPositions;
 
     protected boolean last_edit_state;
-//    protected boolean alarm_state;
 
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -524,7 +523,6 @@ public class main extends AppCompatActivity {
         Gson gson = new Gson();
         glob_font_size = sharedPreferences.getInt("font size", 14);
         last_edit_state = sharedPreferences.getBoolean("last_edit_check", false);
-//        alarm_state = sharedPreferences.getBoolean("alarm_check", false);
         String dataModels_json = sharedPreferences.getString("memo list", null);
         String categoryHeader_json = sharedPreferences.getString("category titles", null);
         String categoryDataModels_json = sharedPreferences.getString("category list", null);
@@ -561,6 +559,8 @@ public class main extends AppCompatActivity {
         adapterOverride();
         listView.setAdapter(adapter);
     }
+
+    // TODO CLEAN ADAPTERS
 
     protected void adapterOverride() {
         adapter = new custom_adapter(dataModels, getApplicationContext(), new custom_adapter.Listener() {
@@ -617,14 +617,6 @@ public class main extends AppCompatActivity {
                 } else {
                     viewHolder.txtDateEdited.setText(null);
                 }
-//                if (alarm_state && !dataModel.getAlarm().isEmpty()) {
-//                    viewHolder.txtAlarm.setText(dataModel.getAlarm());
-//                    viewHolder.txtMessage.setLayoutParams(textViewLayoutParams);
-//                    textViewLayoutParams.setMargins(0,0,0,30);
-//                    viewHolder.txtMessage.requestLayout();
-//                } else {
-//                    viewHolder.txtAlarm.setText(null);
-//                }
 
                 viewHolder.txtMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, glob_font_size);
                 viewHolder.txtImportance.setText(dataModel.getImportance());
@@ -653,7 +645,6 @@ public class main extends AppCompatActivity {
                 final String importanceText = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getImportance();
                 final String memoText = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getMessage();
                 final String txtDateEdited = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getDateEdited();
-//                final String txtAlarm = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getAlarm();
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.memo_items,null);
@@ -662,7 +653,6 @@ public class main extends AppCompatActivity {
                 TextView importance = (TextView)convertView.findViewById(R.id.importance);
                 TextView memo_item = (TextView)convertView.findViewById(R.id.memo_item);
                 TextView date_edited = (TextView)convertView.findViewById(R.id.last_edit);
-//                TextView alarm = (TextView)convertView.findViewById(R.id.alarm);
                 importance.setText(importanceText);
                 memo_item.setText(memoText);
 
@@ -677,14 +667,6 @@ public class main extends AppCompatActivity {
                 } else {
                     date_edited.setText(null);
                 }
-//                if (alarm_state) {
-//                    alarm.setText(txtAlarm);
-//                    memo_item.setLayoutParams(textViewLayoutParams);
-//                    textViewLayoutParams.setMargins(0,0,0,30);
-//                    memo_item.requestLayout();
-//                } else {
-//                    alarm.setText(null);
-//                }
 
                 return convertView;
             }
