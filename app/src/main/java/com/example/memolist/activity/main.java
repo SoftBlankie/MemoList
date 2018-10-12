@@ -30,8 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.memolist.CustomListView;
-import com.example.memolist.adapters.ExpandableListAdapter;
 import com.example.memolist.R;
+import com.example.memolist.adapters.ExpandableListAdapter;
 import com.example.memolist.adapters.custom_adapter;
 import com.example.memolist.data_model;
 import com.google.gson.Gson;
@@ -71,9 +71,10 @@ public class main extends AppCompatActivity {
     protected ArrayList<String> categoryHeader;
     protected ArrayList<ArrayList<data_model>> categoryDataModels;
     protected HashMap<String, ArrayList<data_model>> categoryHash;
+    protected ArrayList<Integer> categoryCheckedPositions;
 
     protected boolean last_edit_state;
-    protected boolean alarm_state;
+//    protected boolean alarm_state;
 
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -222,22 +223,43 @@ public class main extends AppCompatActivity {
 
         exListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick( AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 long packedPosition = exListView.getExpandableListPosition(position);
 
                 int itemType = ExpandableListView.getPackedPositionType(packedPosition);
-                int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
+                final int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
                 int childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
 
                 /*  if group item clicked */
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-                    // remove the item from the array
-                    categoryHeader.remove(position);
-                    categoryDataModels.remove(position);
-                    categoryHash.remove(groupPosition);
-                    exListAdapter.notifyDataSetChanged();
-                    saveData();
+                    // confirmation to remove
+                    mView = getLayoutInflater().inflate(R.layout.confirmation_dialog, null);
+                    mBuilder = new AlertDialog.Builder(main.this);
+                    mBuilder.setView(mView);
+                    final AlertDialog remove_confirm = mBuilder.create();
+                    remove_confirm.show();
+                    remove_confirm.setCanceledOnTouchOutside(false);
+                    Button yes_button = (Button) mView.findViewById(R.id.yes_button);
+                    Button no_button = (Button) mView.findViewById(R.id.no_button);
+                    yes_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // remove the item from the array
+                            categoryHeader.remove(position);
+                            categoryDataModels.remove(position);
+                            categoryHash.remove(groupPosition);
+                            exListAdapter.notifyDataSetChanged();
+                            saveData();
+                            remove_confirm.dismiss();
+                        }
+                    });
+                    no_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            remove_confirm.dismiss();
+                        }
+                    });
                 }
 
                 /*  if child item clicked */
@@ -392,11 +414,24 @@ public class main extends AppCompatActivity {
                 } else {
                     if (spinner.getSelectedItemPosition() == 0) { // if selected "topic"
                         String newImportance = null;
-                        if (importance_seeker.getProgress() != 0) {
-                            newImportance = String.valueOf(importance_seeker.getProgress());
+                        // if category checkbox is checked
+                        if (categoryCheckedPositions.size() > 0) {
+                            for (int i = 0; i < categoryCheckedPositions.size(); i++) {
+                                if (importance_seeker.getProgress() != 0) {
+                                    newImportance = String.valueOf(importance_seeker.getProgress());
+                                }
+                                String newItem = memoInput.getText().toString();
+                                categoryDataModels.get(categoryCheckedPositions.get(i)).add(new data_model(newImportance,
+                                        newItem, getDate(), "", ""));
+                                exListAdapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            if (importance_seeker.getProgress() != 0) {
+                                newImportance = String.valueOf(importance_seeker.getProgress());
+                            }
+                            String newItem = memoInput.getText().toString();
+                            dataModels.add(new data_model(newImportance, newItem, getDate(), "", ""));
                         }
-                        String newItem = memoInput.getText().toString();
-                        dataModels.add(new data_model(newImportance, newItem, getDate(), "", ""));
                     } else if (spinner.getSelectedItemPosition() == 1) { // if selected "category"
                         categoryHeader.add(memoInput.getText().toString());
                         categoryDataModels.add(new ArrayList<data_model>());
@@ -489,7 +524,7 @@ public class main extends AppCompatActivity {
         Gson gson = new Gson();
         glob_font_size = sharedPreferences.getInt("font size", 14);
         last_edit_state = sharedPreferences.getBoolean("last_edit_check", false);
-        alarm_state = sharedPreferences.getBoolean("alarm_check", false);
+//        alarm_state = sharedPreferences.getBoolean("alarm_check", false);
         String dataModels_json = sharedPreferences.getString("memo list", null);
         String categoryHeader_json = sharedPreferences.getString("category titles", null);
         String categoryDataModels_json = sharedPreferences.getString("category list", null);
@@ -512,6 +547,7 @@ public class main extends AppCompatActivity {
         if (categoryHeader == null) {
             categoryHeader = new ArrayList<>();
         }
+        categoryCheckedPositions = new ArrayList<>();
         if (categoryHash == null) {
             categoryHash = new HashMap<>();
         } else {
@@ -581,14 +617,14 @@ public class main extends AppCompatActivity {
                 } else {
                     viewHolder.txtDateEdited.setText(null);
                 }
-                if (alarm_state && !dataModel.getAlarm().isEmpty()) {
-                    viewHolder.txtAlarm.setText(dataModel.getAlarm());
-                    viewHolder.txtMessage.setLayoutParams(textViewLayoutParams);
-                    textViewLayoutParams.setMargins(0,0,0,30);
-                    viewHolder.txtMessage.requestLayout();
-                } else {
-                    viewHolder.txtAlarm.setText(null);
-                }
+//                if (alarm_state && !dataModel.getAlarm().isEmpty()) {
+//                    viewHolder.txtAlarm.setText(dataModel.getAlarm());
+//                    viewHolder.txtMessage.setLayoutParams(textViewLayoutParams);
+//                    textViewLayoutParams.setMargins(0,0,0,30);
+//                    viewHolder.txtMessage.requestLayout();
+//                } else {
+//                    viewHolder.txtAlarm.setText(null);
+//                }
 
                 viewHolder.txtMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, glob_font_size);
                 viewHolder.txtImportance.setText(dataModel.getImportance());
@@ -610,14 +646,14 @@ public class main extends AppCompatActivity {
     }
 
     protected void exAdapterOverride() {
-        exListAdapter = new ExpandableListAdapter(main.this, categoryHeader, categoryHash) {
+        exListAdapter = new ExpandableListAdapter(main.this, categoryHeader, categoryHash, categoryCheckedPositions) {
             @Override
             public View getChildView(int groupPosition, final int childPosition, boolean isLastChild,
                                      View convertView, ViewGroup parent) {
                 final String importanceText = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getImportance();
                 final String memoText = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getMessage();
                 final String txtDateEdited = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getDateEdited();
-                final String txtAlarm = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getAlarm();
+//                final String txtAlarm = listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition).getAlarm();
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.memo_items,null);
@@ -626,7 +662,7 @@ public class main extends AppCompatActivity {
                 TextView importance = (TextView)convertView.findViewById(R.id.importance);
                 TextView memo_item = (TextView)convertView.findViewById(R.id.memo_item);
                 TextView date_edited = (TextView)convertView.findViewById(R.id.last_edit);
-                TextView alarm = (TextView)convertView.findViewById(R.id.alarm);
+//                TextView alarm = (TextView)convertView.findViewById(R.id.alarm);
                 importance.setText(importanceText);
                 memo_item.setText(memoText);
 
@@ -641,14 +677,14 @@ public class main extends AppCompatActivity {
                 } else {
                     date_edited.setText(null);
                 }
-                if (alarm_state) {
-                    alarm.setText(txtAlarm);
-                    memo_item.setLayoutParams(textViewLayoutParams);
-                    textViewLayoutParams.setMargins(0,0,0,30);
-                    memo_item.requestLayout();
-                } else {
-                    alarm.setText(null);
-                }
+//                if (alarm_state) {
+//                    alarm.setText(txtAlarm);
+//                    memo_item.setLayoutParams(textViewLayoutParams);
+//                    textViewLayoutParams.setMargins(0,0,0,30);
+//                    memo_item.requestLayout();
+//                } else {
+//                    alarm.setText(null);
+//                }
 
                 return convertView;
             }

@@ -1,7 +1,6 @@
 package com.example.memolist.menu;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -17,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.memolist.R;
-import com.example.memolist.activity.edit_view;
 import com.example.memolist.activity.main;
 
 import static com.example.memolist.data_sort.sortByAlphabet;
@@ -51,9 +49,9 @@ public class myMenu extends main {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
 
-            case R.id.action_edit:
-                startActivity(new Intent(this, edit_view.class));
-                return true;
+            /*case R.id.action_edit:
+                startActivity(new Intent(this, edit_view.class)); // TODO disabled TBD
+                return true;*/
 
             case R.id.action_info:
                 mView = getLayoutInflater().inflate(R.layout.info_dialog, null);
@@ -91,7 +89,7 @@ public class myMenu extends main {
                 mView = getLayoutInflater().inflate(R.layout.setting_dialog, null);
                 createDialog();
                 CheckBox showLastEdit = (CheckBox) mView.findViewById(R.id.show_last_edit_check);
-                CheckBox showAlarm = (CheckBox) mView.findViewById(R.id.show_alarm_check);
+//                CheckBox showAlarm = (CheckBox) mView.findViewById(R.id.show_alarm_check);
                 final TextView fontPosition = (TextView) mView.findViewById(R.id.font_position);
                 SeekBar font_seeker = (SeekBar) mView.findViewById(R.id.font_seeker);
                 final Spinner color_spinner = (Spinner) mView.findViewById(R.id.spinner);
@@ -134,7 +132,7 @@ public class myMenu extends main {
 
                 // Time settings
                 showLastEdit.setChecked(last_edit_state);
-                showAlarm.setChecked(alarm_state);
+//                showAlarm.setChecked(alarm_state);
                 showLastEdit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -145,16 +143,16 @@ public class myMenu extends main {
                         editor.apply();
                     }
                 });
-                showAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        alarm_state = !alarm_state;
-                        // save showAlarm state
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("alarm_check", alarm_state);
-                        editor.apply();
-                    }
-                });
+//                showAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                    @Override
+//                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                        alarm_state = !alarm_state;
+//                        // save showAlarm state
+//                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                        editor.putBoolean("alarm_check", alarm_state);
+//                        editor.apply();
+//                    }
+//                });
 
                 clear_button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -164,6 +162,7 @@ public class myMenu extends main {
                         mBuilder.setView(mView);
                         confirm_dialog = mBuilder.create();
                         confirm_dialog.show();
+                        confirm_dialog.setCanceledOnTouchOutside(false);
                         Button yes_button = (Button) mView.findViewById(R.id.yes_button);
                         Button no_button = (Button) mView.findViewById(R.id.no_button);
                         yes_button.setOnClickListener(new View.OnClickListener() {

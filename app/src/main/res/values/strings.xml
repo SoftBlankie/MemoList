@@ -1,18 +1,15 @@
 <resources>
     <string name="app_name">MemoList</string>
     <string name="information">Information</string>
-    <string name="information_1">This app was created in order to provide a faster way to create memos, planned to be lightweight.</string>
-    <string name="information_2">The app was planned to be an experiment for my main app in which I named StudyInterval. In other words, I didn\'t expect to finish this.</string>
-    <string name="information_3">In any case, please enjoy the app as I do not not plan to post ads or what not on here. It makes everything look ugly as well as interfere with the interface.</string>
-    <string name="information_4">Overall, I\'m not being monetized to create this app. At the end of this text, feel free to send donations and help cover the cost of uploading this app. Enjoy!</string>
+    <string name="information_1">This lightweight app was created in order to provide a faster way to create memos.</string>
+    <string name="information_2">Feel free to send donations. Enjoy!</string>
     <string name="donate">Donate</string>
     <string name="confirm">Confirm</string>
     <string name="help">Help</string>
     <string name="help_1">- Select between making a category or topic</string>
-    <string name="help_2">- Manually sort by long pressing and dragging</string>
-    <string name="help_3">- Delete by tapping the item</string>
-    <string name="help_4">- Click the notification button if you wish to create a notification</string>
-    <string name="help_5">Notification options reset after every memo</string>
+    <string name="help_2">- Manually sort by dragging</string>
+    <string name="help_3">- Delete by holding the item</string>
+    <string name="help_4">- Edit by tapping the item</string>
     <string name="settings">Settings</string>
     <string name="clear_list">Clear list</string>
     <string name="change_font_initial">Change Font [10]:</string>
