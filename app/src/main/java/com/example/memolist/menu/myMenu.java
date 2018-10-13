@@ -52,7 +52,7 @@ public class myMenu extends main {
                 return true;
 
             case R.id.action_info:
-                mView = getLayoutInflater().inflate(R.layout.info_dialog, null);
+                mView = getLayoutInflater().inflate(R.layout.dialog_info, null);
                 createDialog();
                 Button ask_donate_button = (Button) mView.findViewById(R.id.ask_donate_button);
                 createConfirmButton();
@@ -66,13 +66,13 @@ public class myMenu extends main {
                 return true;
 
             case R.id.action_help:
-                mView = getLayoutInflater().inflate(R.layout.help_dialog, null);
+                mView = getLayoutInflater().inflate(R.layout.dialog_help, null);
                 createDialog();
                 createConfirmButton();
                 return true;
 
             case R.id.action_settings:
-                mView = getLayoutInflater().inflate(R.layout.setting_dialog, null);
+                mView = getLayoutInflater().inflate(R.layout.dialog_settings, null);
                 createDialog();
                 CheckBox showLastEdit = (CheckBox) mView.findViewById(R.id.show_last_edit_check);
                 final TextView fontPosition = (TextView) mView.findViewById(R.id.font_position);
@@ -131,7 +131,7 @@ public class myMenu extends main {
                 clear_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mView = getLayoutInflater().inflate(R.layout.confirmation_dialog, null);
+                        mView = getLayoutInflater().inflate(R.layout.dialog_confirm, null);
                         mBuilder = new AlertDialog.Builder(myMenu.this);
                         mBuilder.setView(mView);
                         confirm_dialog = mBuilder.create();

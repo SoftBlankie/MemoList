@@ -60,6 +60,7 @@ public class main extends AppCompatActivity {
     protected SeekBar importance_seeker;
     protected TextView importance_seeker_position;
     private Spinner spinner;
+    private Spinner input_category_spinner;
 
     protected AlertDialog dialog;
     protected AlertDialog confirm_dialog;
@@ -121,7 +122,7 @@ public class main extends AppCompatActivity {
 
                 // edit text
                 mBuilder = new AlertDialog.Builder(main.this);
-                mView = getLayoutInflater().inflate(R.layout.change_item_text_dialog, null);
+                mView = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
                 final EditText memo_text = (EditText) mView.findViewById(R.id.memo_text);
                 final TextView category_indicator = (TextView) mView.findViewById(R.id.category_indicator);
                 final SeekBar category_seeker = (SeekBar) mView.findViewById(R.id.category_seeker);
@@ -232,7 +233,7 @@ public class main extends AppCompatActivity {
                 /*  if group item clicked */
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                     // confirmation to remove
-                    mView = getLayoutInflater().inflate(R.layout.confirmation_dialog, null);
+                    mView = getLayoutInflater().inflate(R.layout.dialog_confirm, null);
                     mBuilder = new AlertDialog.Builder(main.this);
                     mBuilder.setView(mView);
                     final AlertDialog remove_confirm = mBuilder.create();
@@ -297,7 +298,7 @@ public class main extends AppCompatActivity {
 
                 // edit text
                 mBuilder = new AlertDialog.Builder(main.this);
-                mView = getLayoutInflater().inflate(R.layout.change_item_text_dialog, null);
+                mView = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
                 final EditText memo_text = (EditText) mView.findViewById(R.id.memo_text);
                 final TextView category_indicator = (TextView) mView.findViewById(R.id.category_indicator);
                 final SeekBar category_seeker = (SeekBar) mView.findViewById(R.id.category_seeker);
@@ -412,11 +413,20 @@ public class main extends AppCompatActivity {
                 } else {
                     if (spinner.getSelectedItemPosition() == 0) { // if selected "topic"
                         String newImportance = null;
-                        if (importance_seeker.getProgress() != 0) {
-                            newImportance = String.valueOf(importance_seeker.getProgress());
+                        if ((input_category_spinner != null) && (input_category_spinner.getSelectedItemPosition() != 0)) {
+                            if (importance_seeker.getProgress() != 0) {
+                                newImportance = String.valueOf(importance_seeker.getProgress());
+                            }
+                            String newItem = memoInput.getText().toString();
+                            categoryDataModels.get(input_category_spinner.getSelectedItemPosition()-1).add(new data_model(newImportance,
+                                    newItem, getDate()));
+                        } else {
+                            if (importance_seeker.getProgress() != 0) {
+                                newImportance = String.valueOf(importance_seeker.getProgress());
+                            }
+                            String newItem = memoInput.getText().toString();
+                            dataModels.add(new data_model(newImportance, newItem, getDate()));
                         }
-                        String newItem = memoInput.getText().toString();
-                        dataModels.add(new data_model(newImportance, newItem, getDate()));
                     } else if (spinner.getSelectedItemPosition() == 1) { // if selected "category"
                         categoryHeader.add(memoInput.getText().toString());
                         categoryDataModels.add(new ArrayList<data_model>());
@@ -431,11 +441,50 @@ public class main extends AppCompatActivity {
                         }});
 
                     adapterOverride();
+                    exAdapterOverride();
                     exListView.setAdapter(exListAdapter);
                     listView.setAdapter(adapter);
                     restoreDefault();
                     saveData();
                 }
+            }
+        });
+        add_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mBuilder = new AlertDialog.Builder(main.this);
+                mView = getLayoutInflater().inflate(R.layout.dialog_input_category, null);
+                input_category_spinner = (Spinner) mView.findViewById(R.id.input_category_spinner);
+                final TextView input_category_indicator = (TextView) findViewById(R.id.input_category_indicator);
+                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
+                mBuilder.setView(mView);
+                dialog = mBuilder.create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+                categoryHeader.add(0, "Default");
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(main.this, R.layout.input_spinner, categoryHeader);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                input_category_spinner.setAdapter(adapter);
+                input_category_spinner.setSelection(0);
+
+                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
+                confirm_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        input_category_indicator.setText(input_category_spinner.getSelectedItem().toString());
+                        categoryHeader.remove(0);
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        input_category_indicator.setText(input_category_spinner.getSelectedItem().toString());
+                        categoryHeader.remove(0);
+                    }
+                });
+
+                return false;
             }
         });
     }
@@ -538,7 +587,6 @@ public class main extends AppCompatActivity {
                 categoryHash.put(categoryHeader.get(i), categoryDataModels.get(i));
             }
         }
-
         exAdapterOverride();
         exListView.setAdapter(exListAdapter);
         adapterOverride();
@@ -574,6 +622,8 @@ public class main extends AppCompatActivity {
                     result=convertView;
                 }
 
+                TextView input_category_indicator = (TextView) findViewById(R.id.input_category_indicator);
+
                 String color = null;
                 if ((glob_color_scheme == 0) || (glob_color_scheme == 2)) {
                     TypedArray ta = obtainStyledAttributes(R.style.ActivityTheme_Primary_Base_Light, R.styleable.MyCustomView);
@@ -582,6 +632,7 @@ public class main extends AppCompatActivity {
                     TypedArray ta = obtainStyledAttributes(R.style.ActivityTheme_Primary_Base_Dark, R.styleable.MyCustomView);
                     color = ta.getString(R.styleable.MyCustomView_primaryTextColor);
                     viewHolder.txtDateEdited.setTextColor(Color.LTGRAY);
+                    input_category_indicator.setTextColor(Color.LTGRAY);
                 }
 
                 viewHolder.txtImportance.setTextColor(Color.parseColor(color));

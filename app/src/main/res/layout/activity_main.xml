@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/option_layout"
-        android:layout_above="@+id/input_layout"
+        android:layout_above="@+id/input_category_indicator"
         android:orientation="vertical">
 
         <com.example.memolist.CustomExpandableListView
@@ -85,6 +85,13 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/input_category_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/input_layout"
+        android:text="Default"/>
+
     <LinearLayout
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
@@ -99,8 +106,7 @@
             android:maxLines="1"
             android:textColor="?attr/primaryTextColor"
             android:textColorHint="?attr/secondaryTextColor"
-            android:backgroundTint="?attr/colorAccent"
-            android:hint="@string/input_memo"/>
+            android:backgroundTint="?attr/colorAccent" />
 
         <Button
             android:id="@+id/add_button"
