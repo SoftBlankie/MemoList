@@ -53,7 +53,7 @@ public class main extends AppCompatActivity {
     protected CustomListView listView;
     protected Drawable origBackground;
 
-    protected static custom_adapter adapter;
+    protected custom_adapter adapter;
     protected int glob_font_size;
     protected int glob_color_scheme;
     private EditText memoInput;
@@ -98,7 +98,7 @@ public class main extends AppCompatActivity {
     }
 
     private void buildExListView() {
-        exListView = (ExpandableListView) findViewById(R.id.category_view);
+        exListView = findViewById(R.id.category_view);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -121,21 +121,17 @@ public class main extends AppCompatActivity {
                 view.setBackgroundColor(Color.LTGRAY);
 
                 // edit text
-                mBuilder = new AlertDialog.Builder(main.this);
                 mView = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
-                final EditText memo_text = (EditText) mView.findViewById(R.id.memo_text);
-                final TextView category_indicator = (TextView) mView.findViewById(R.id.category_indicator);
-                final SeekBar category_seeker = (SeekBar) mView.findViewById(R.id.category_seeker);
-                final TextView importance_seeker_position = (TextView) mView.findViewById(R.id.importance_seeker_position);
-                final SeekBar importance_seeker = (SeekBar) mView.findViewById(R.id.importance_seeker);
-                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
-                mBuilder.setView(mView);
-                dialog = mBuilder.create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
+                createDialogMain(main.this);
+                final EditText memo_text = mView.findViewById(R.id.memo_text);
+                final TextView category_indicator = mView.findViewById(R.id.category_indicator);
+                final SeekBar category_seeker = mView.findViewById(R.id.category_seeker);
+                final TextView importance_seeker_position = mView.findViewById(R.id.importance_seeker_position);
+                final SeekBar importance_seeker = mView.findViewById(R.id.importance_seeker);
+                confirm_button = mView.findViewById(R.id.confirm_button);
                 memo_text.setText(categoryDataModels.get(groupPosition).get(childPosition).getMessage());
                 final String temp = memo_text.getText().toString();
-                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
+                confirm_button = mView.findViewById(R.id.confirm_button);
                 confirm_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -230,7 +226,7 @@ public class main extends AppCompatActivity {
                 final int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
                 int childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
 
-                /*  if group item clicked */
+                //  if group item clicked
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                     // confirmation to remove
                     mView = getLayoutInflater().inflate(R.layout.dialog_confirm, null);
@@ -239,8 +235,8 @@ public class main extends AppCompatActivity {
                     final AlertDialog remove_confirm = mBuilder.create();
                     remove_confirm.show();
                     remove_confirm.setCanceledOnTouchOutside(false);
-                    Button yes_button = (Button) mView.findViewById(R.id.yes_button);
-                    Button no_button = (Button) mView.findViewById(R.id.no_button);
+                    Button yes_button = mView.findViewById(R.id.yes_button);
+                    Button no_button = mView.findViewById(R.id.no_button);
                     yes_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -276,7 +272,7 @@ public class main extends AppCompatActivity {
     }
 
     private void buildListView() {
-        listView = (CustomListView)findViewById(R.id.memo_view);
+        listView = findViewById(R.id.memo_view);
         listView.setAdapter(adapter);
         listView.setListener(new CustomListView.Listener() {
             @Override
@@ -297,21 +293,18 @@ public class main extends AppCompatActivity {
                 view.setBackgroundColor(Color.LTGRAY);
 
                 // edit text
-                mBuilder = new AlertDialog.Builder(main.this);
                 mView = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
-                final EditText memo_text = (EditText) mView.findViewById(R.id.memo_text);
-                final TextView category_indicator = (TextView) mView.findViewById(R.id.category_indicator);
-                final SeekBar category_seeker = (SeekBar) mView.findViewById(R.id.category_seeker);
-                final TextView importance_seeker_position = (TextView) mView.findViewById(R.id.importance_seeker_position);
-                final SeekBar importance_seeker = (SeekBar) mView.findViewById(R.id.importance_seeker);
-                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
-                mBuilder.setView(mView);
-                dialog = mBuilder.create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
+                createDialogMain(main.this);
+                final EditText memo_text = mView.findViewById(R.id.memo_text);
+                final TextView category_indicator = mView.findViewById(R.id.category_indicator);
+                final SeekBar category_seeker = mView.findViewById(R.id.category_seeker);
+                final TextView importance_seeker_position = mView.findViewById(R.id.importance_seeker_position);
+                final SeekBar importance_seeker = mView.findViewById(R.id.importance_seeker);
+                confirm_button = mView.findViewById(R.id.confirm_button);
                 memo_text.setText(dataModels.get(position).getMessage());
+
                 final String temp = memo_text.getText().toString();
-                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
+                confirm_button = mView.findViewById(R.id.confirm_button);
                 confirm_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -348,6 +341,7 @@ public class main extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }
                 });
+
                 // Category Seeker
                 category_indicator.setText("No Category Chosen");
                 category_seeker.setMax(categoryHeader.size());
@@ -367,6 +361,7 @@ public class main extends AppCompatActivity {
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {}
                 });
+
                 // Importance seeker
                 if (dataModels.get(position).getImportance() == null) {
                     importance_seeker_position.setText("0");
@@ -403,8 +398,8 @@ public class main extends AppCompatActivity {
     }
 
     private void buildMemoInput() {
-        memoInput = (EditText) findViewById(R.id.memo_input);
-        Button add_button = (Button) findViewById(R.id.add_button);
+        memoInput = findViewById(R.id.memo_input);
+        Button add_button = findViewById(R.id.add_button);
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -452,22 +447,18 @@ public class main extends AppCompatActivity {
         add_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mBuilder = new AlertDialog.Builder(main.this);
                 mView = getLayoutInflater().inflate(R.layout.dialog_input_category, null);
-                input_category_spinner = (Spinner) mView.findViewById(R.id.input_category_spinner);
-                final TextView input_category_indicator = (TextView) findViewById(R.id.input_category_indicator);
-                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
-                mBuilder.setView(mView);
-                dialog = mBuilder.create();
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
+                createDialogMain(main.this);
+                input_category_spinner = mView.findViewById(R.id.input_category_spinner);
+                final TextView input_category_indicator = findViewById(R.id.input_category_indicator);
+                confirm_button = mView.findViewById(R.id.confirm_button);
                 categoryHeader.add(0, "Default");
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(main.this, R.layout.input_spinner, categoryHeader);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 input_category_spinner.setAdapter(adapter);
                 input_category_spinner.setSelection(0);
 
-                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
+                confirm_button = mView.findViewById(R.id.confirm_button);
                 confirm_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -492,27 +483,21 @@ public class main extends AppCompatActivity {
     private String getDate() {
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        String formattedDate = df.format(c);
 
-        return formattedDate;
+        return df.format(c);
     }
 
     private void buildSpinner() {
-        // Initialize Spinner
-        spinner = (Spinner) findViewById(R.id.spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
+        spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.input_list, R.layout.input_spinner);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
     }
 
     protected void buildImportanceSeeker() {
-        // Set Seeker
-        importance_seeker_position = (TextView) findViewById(R.id.importance_seeker_position);
-        importance_seeker = (SeekBar) findViewById(R.id.importance_seeker);
+        importance_seeker_position = findViewById(R.id.importance_seeker_position);
+        importance_seeker = findViewById(R.id.importance_seeker);
         importance_seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -523,9 +508,7 @@ public class main extends AppCompatActivity {
             public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                importance_seeker_position.setText(String.valueOf(importance_seeker.getProgress()));
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
     }
 
@@ -610,9 +593,9 @@ public class main extends AppCompatActivity {
                     viewHolder = new custom_adapter.ViewHolder();
                     LayoutInflater inflater = LayoutInflater.from(getContext());
                     convertView = inflater.inflate(R.layout.memo_items, parent, false);
-                    viewHolder.txtImportance = (TextView) convertView.findViewById(R.id.importance);
-                    viewHolder.txtMessage = (TextView) convertView.findViewById(R.id.memo_item);
-                    viewHolder.txtDateEdited = (TextView) convertView.findViewById(R.id.last_edit);
+                    viewHolder.txtImportance = convertView.findViewById(R.id.importance);
+                    viewHolder.txtMessage = convertView.findViewById(R.id.memo_item);
+                    viewHolder.txtDateEdited = convertView.findViewById(R.id.last_edit);
 
                     result=convertView;
 
@@ -622,7 +605,7 @@ public class main extends AppCompatActivity {
                     result=convertView;
                 }
 
-                TextView input_category_indicator = (TextView) findViewById(R.id.input_category_indicator);
+                TextView input_category_indicator = findViewById(R.id.input_category_indicator);
 
                 String color = null;
                 if ((glob_color_scheme == 0) || (glob_color_scheme == 2)) {
@@ -654,7 +637,7 @@ public class main extends AppCompatActivity {
                 viewHolder.txtImportance.setText(dataModel.getImportance());
                 viewHolder.txtMessage.setText(dataModel.getMessage());
 
-                final RelativeLayout row = (RelativeLayout) convertView.findViewById(R.id.memo_items);
+                final RelativeLayout row = convertView.findViewById(R.id.memo_items);
 
                 convertView.findViewById(R.id.imageViewGrab).setOnTouchListener(new View.OnTouchListener() {
                     @Override
@@ -682,9 +665,9 @@ public class main extends AppCompatActivity {
                     convertView = inflater.inflate(R.layout.memo_items,null);
                 }
                 convertView.findViewById(R.id.imageViewGrab).setVisibility(View.INVISIBLE);
-                TextView importance = (TextView)convertView.findViewById(R.id.importance);
-                TextView memo_item = (TextView)convertView.findViewById(R.id.memo_item);
-                TextView date_edited = (TextView)convertView.findViewById(R.id.last_edit);
+                TextView importance = convertView.findViewById(R.id.importance);
+                TextView memo_item = convertView.findViewById(R.id.memo_item);
+                TextView date_edited = convertView.findViewById(R.id.last_edit);
                 importance.setText(importanceText);
                 memo_item.setText(memoText);
 
@@ -704,5 +687,13 @@ public class main extends AppCompatActivity {
             }
 
         };
+    }
+
+    protected void createDialogMain(Context targetContext) {
+        mBuilder = new AlertDialog.Builder(targetContext);
+        mBuilder.setView(mView);
+        dialog = mBuilder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 }

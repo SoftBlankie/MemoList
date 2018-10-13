@@ -1,13 +1,9 @@
 package com.example.memolist;
 
-/**
- * Created by Kinred on 4/16/18.
- */
-
 public class data_model {
-    String importance;
-    String message;
-    String dateEdited;
+    private String importance;
+    private String message;
+    private String dateEdited;
 
     public data_model(String importance, String message, String dateEdited) {
         this.importance = importance;

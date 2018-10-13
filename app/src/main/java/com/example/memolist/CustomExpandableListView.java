@@ -6,9 +6,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.widget.ExpandableListView;
 
-/**
- * Created by Kinred on 8/11/18.
- */
 public class CustomExpandableListView extends ExpandableListView {
 
     private int maxHeightDp;
@@ -36,11 +33,6 @@ public class CustomExpandableListView extends ExpandableListView {
         int maxHeightPx = convertDpToPx(maxHeightDp);
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeightPx, MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    public void setMaxHeightDp(int maxHeightDp) {
-        this.maxHeightDp = maxHeightDp;
-        invalidate();
     }
 
     private int convertDpToPx(int dp){

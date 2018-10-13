@@ -24,10 +24,6 @@ import static com.example.memolist.data_sort.sortByAlphabet;
 import static com.example.memolist.data_sort.sortByDateEdit;
 import static com.example.memolist.data_sort.sortByImportance;
 
-/**
- * Created by Kinred on 5/9/18.
- */
-
 public class myMenu extends main {
     protected String string;
 
@@ -54,7 +50,7 @@ public class myMenu extends main {
             case R.id.action_info:
                 mView = getLayoutInflater().inflate(R.layout.dialog_info, null);
                 createDialog();
-                Button ask_donate_button = (Button) mView.findViewById(R.id.ask_donate_button);
+                Button ask_donate_button = mView.findViewById(R.id.ask_donate_button);
                 createConfirmButton();
                 ask_donate_button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -74,12 +70,12 @@ public class myMenu extends main {
             case R.id.action_settings:
                 mView = getLayoutInflater().inflate(R.layout.dialog_settings, null);
                 createDialog();
-                CheckBox showLastEdit = (CheckBox) mView.findViewById(R.id.show_last_edit_check);
-                final TextView fontPosition = (TextView) mView.findViewById(R.id.font_position);
-                SeekBar font_seeker = (SeekBar) mView.findViewById(R.id.font_seeker);
-                final Spinner color_spinner = (Spinner) mView.findViewById(R.id.spinner);
-                Button clear_button = (Button) mView.findViewById(R.id.clear_button);
-                confirm_button = (Button) mView.findViewById(R.id.confirm_button);
+                CheckBox showLastEdit = mView.findViewById(R.id.show_last_edit_check);
+                final TextView fontPosition = mView.findViewById(R.id.font_position);
+                SeekBar font_seeker = mView.findViewById(R.id.font_seeker);
+                final Spinner color_spinner = mView.findViewById(R.id.spinner);
+                Button clear_button = mView.findViewById(R.id.clear_button);
+                confirm_button = mView.findViewById(R.id.confirm_button);
 
                 string = "Change Font [" + glob_font_size + "]";
                 fontPosition.setText(string);
@@ -92,9 +88,7 @@ public class myMenu extends main {
                         glob_font_size =  progress + 14;
                         string = "Change Font [" + glob_font_size + "]";
                         fontPosition.setText(string);
-                        adapterOverride();
-                        listView.setAdapter(adapter);
-                        saveData();
+                        saveAndAdapt();
                     }
 
                     @Override
@@ -137,15 +131,13 @@ public class myMenu extends main {
                         confirm_dialog = mBuilder.create();
                         confirm_dialog.show();
                         confirm_dialog.setCanceledOnTouchOutside(false);
-                        Button yes_button = (Button) mView.findViewById(R.id.yes_button);
-                        Button no_button = (Button) mView.findViewById(R.id.no_button);
+                        Button yes_button = mView.findViewById(R.id.yes_button);
+                        Button no_button = mView.findViewById(R.id.no_button);
                         yes_button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 dataModels.clear();
-                                saveData();
-                                adapterOverride();
-                                listView.setAdapter(adapter);
+                                saveAndAdapt();
                                 confirm_dialog.dismiss();
                             }
                         });
@@ -177,10 +169,7 @@ public class myMenu extends main {
                             finish();
                             startActivity(getIntent());
                         }
-                        saveData();
-                        adapterOverride();
-                        listView.setAdapter(adapter);
-                        exListView.setAdapter(exListAdapter);
+                        saveAndAdapt();
                         dialog.dismiss();
                     }
                 });
@@ -188,29 +177,17 @@ public class myMenu extends main {
 
             case R.id.sort_importance:
                 sortByImportance(dataModels, categoryDataModels);
-                saveData();
-                adapterOverride();
-                exAdapterOverride();
-                listView.setAdapter(adapter);
-                exListView.setAdapter(exListAdapter);
+                saveAndAdapt();
                 return true;
 
             case R.id.sort_alphabetical:
                 sortByAlphabet(dataModels, categoryDataModels);
-                saveData();
-                adapterOverride();
-                exAdapterOverride();
-                listView.setAdapter(adapter);
-                exListView.setAdapter(exListAdapter);
+                saveAndAdapt();
                 return true;
 
             case R.id.sort_date_edited:
                 sortByDateEdit(dataModels, categoryDataModels);
-                saveData();
-                adapterOverride();
-                exAdapterOverride();
-                listView.setAdapter(adapter);
-                exListView.setAdapter(exListAdapter);
+                saveAndAdapt();
                 return true;
         }
 
@@ -225,13 +202,21 @@ public class myMenu extends main {
     }
 
     protected void createConfirmButton() {
-        confirm_button = (Button) mView.findViewById(R.id.confirm_button);
+        confirm_button = mView.findViewById(R.id.confirm_button);
         confirm_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
+    }
+
+    protected void saveAndAdapt() {
+        saveData();
+        adapterOverride();
+        exAdapterOverride();
+        listView.setAdapter(adapter);
+        exListView.setAdapter(exListAdapter);
     }
 
 }

@@ -23,10 +23,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-/**
- * Created by Kinred on 8/4/18.
- */
-
 public class CustomListView extends ListView {
     private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
     private final int MOVE_DURATION = 150;

@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-/**
- * Created by Kinred on 5/8/18.
- */
-
 public class data_sort {
 
     public static void sortByImportance(ArrayList<data_model> dataModels, ArrayList<ArrayList<data_model>> categoryDataModels) {
