@@ -71,7 +71,6 @@ public class main extends AppCompatActivity {
     protected ArrayList<String> categoryHeader;
     protected ArrayList<ArrayList<data_model>> categoryDataModels;
     protected HashMap<String, ArrayList<data_model>> categoryHash;
-    protected ArrayList<Integer> categoryCheckedPositions;
 
     protected boolean last_edit_state;
 
@@ -413,24 +412,11 @@ public class main extends AppCompatActivity {
                 } else {
                     if (spinner.getSelectedItemPosition() == 0) { // if selected "topic"
                         String newImportance = null;
-                        // if category checkbox is checked
-                        if (categoryCheckedPositions.size() > 0) {
-                            for (int i = 0; i < categoryCheckedPositions.size(); i++) {
-                                if (importance_seeker.getProgress() != 0) {
-                                    newImportance = String.valueOf(importance_seeker.getProgress());
-                                }
-                                String newItem = memoInput.getText().toString();
-                                categoryDataModels.get(categoryCheckedPositions.get(i)).add(new data_model(newImportance,
-                                        newItem, getDate(), "", ""));
-                                exListAdapter.notifyDataSetChanged();
-                            }
-                        } else {
-                            if (importance_seeker.getProgress() != 0) {
-                                newImportance = String.valueOf(importance_seeker.getProgress());
-                            }
-                            String newItem = memoInput.getText().toString();
-                            dataModels.add(new data_model(newImportance, newItem, getDate(), "", ""));
+                        if (importance_seeker.getProgress() != 0) {
+                            newImportance = String.valueOf(importance_seeker.getProgress());
                         }
+                        String newItem = memoInput.getText().toString();
+                        dataModels.add(new data_model(newImportance, newItem, getDate()));
                     } else if (spinner.getSelectedItemPosition() == 1) { // if selected "category"
                         categoryHeader.add(memoInput.getText().toString());
                         categoryDataModels.add(new ArrayList<data_model>());
@@ -545,7 +531,6 @@ public class main extends AppCompatActivity {
         if (categoryHeader == null) {
             categoryHeader = new ArrayList<>();
         }
-        categoryCheckedPositions = new ArrayList<>();
         if (categoryHash == null) {
             categoryHash = new HashMap<>();
         } else {
@@ -559,8 +544,6 @@ public class main extends AppCompatActivity {
         adapterOverride();
         listView.setAdapter(adapter);
     }
-
-    // TODO CLEAN ADAPTERS
 
     protected void adapterOverride() {
         adapter = new custom_adapter(dataModels, getApplicationContext(), new custom_adapter.Listener() {
@@ -582,7 +565,6 @@ public class main extends AppCompatActivity {
                     viewHolder.txtImportance = (TextView) convertView.findViewById(R.id.importance);
                     viewHolder.txtMessage = (TextView) convertView.findViewById(R.id.memo_item);
                     viewHolder.txtDateEdited = (TextView) convertView.findViewById(R.id.last_edit);
-                    viewHolder.txtAlarm = (TextView) convertView.findViewById(R.id.alarm);
 
                     result=convertView;
 
@@ -600,7 +582,6 @@ public class main extends AppCompatActivity {
                     TypedArray ta = obtainStyledAttributes(R.style.ActivityTheme_Primary_Base_Dark, R.styleable.MyCustomView);
                     color = ta.getString(R.styleable.MyCustomView_primaryTextColor);
                     viewHolder.txtDateEdited.setTextColor(Color.LTGRAY);
-                    viewHolder.txtAlarm.setTextColor(Color.LTGRAY);
                 }
 
                 viewHolder.txtImportance.setTextColor(Color.parseColor(color));
@@ -638,7 +619,7 @@ public class main extends AppCompatActivity {
     }
 
     protected void exAdapterOverride() {
-        exListAdapter = new ExpandableListAdapter(main.this, categoryHeader, categoryHash, categoryCheckedPositions) {
+        exListAdapter = new ExpandableListAdapter(main.this, categoryHeader, categoryHash) {
             @Override
             public View getChildView(int groupPosition, final int childPosition, boolean isLastChild,
                                      View convertView, ViewGroup parent) {

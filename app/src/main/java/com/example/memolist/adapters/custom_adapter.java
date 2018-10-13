@@ -37,8 +37,6 @@ public class custom_adapter extends ArrayAdapter<data_model> implements View.OnC
         public TextView txtImportance;
         public TextView txtMessage;
         public TextView txtDateEdited;
-        public TextView txtAlarm;
-        public TextView txtNotification;
     }
 
     public custom_adapter(ArrayList<data_model> data, Context context, Listener listener) {
@@ -74,11 +72,7 @@ public class custom_adapter extends ArrayAdapter<data_model> implements View.OnC
             convertView = inflater.inflate(R.layout.memo_items, parent, false);
             viewHolder.txtImportance = (TextView) convertView.findViewById(R.id.importance);
             viewHolder.txtMessage = (TextView) convertView.findViewById(R.id.memo_item);
-
-            //FIXME
-            viewHolder.txtDateEdited = (TextView) convertView.findViewById(R.id.memo_item);
-            viewHolder.txtAlarm = (TextView) convertView.findViewById(R.id.memo_item);
-            viewHolder.txtNotification = (TextView) convertView.findViewById(R.id.memo_item);
+            viewHolder.txtDateEdited = (TextView) convertView.findViewById(R.id.last_edit);
 
             result=convertView;
 
@@ -90,12 +84,6 @@ public class custom_adapter extends ArrayAdapter<data_model> implements View.OnC
 
         viewHolder.txtImportance.setText(dataModel.getImportance());
         viewHolder.txtMessage.setText(dataModel.getMessage());
-
-        //FIXME
-        viewHolder.txtDateEdited.setText(dataModel.getDateEdited());
-        viewHolder.txtAlarm.setText(dataModel.getAlarm());
-        viewHolder.txtNotification.setText(dataModel.getNotification());
-        // Return the completed view to render on screen
 
         final RelativeLayout row = (RelativeLayout) convertView.findViewById(R.id.memo_items);
 

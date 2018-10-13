@@ -1,7 +1,9 @@
 package com.example.memolist.menu;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
@@ -57,20 +59,8 @@ public class myMenu extends main {
                 ask_donate_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
-                        mView = getLayoutInflater().inflate(R.layout.donation_dialog, null);
-                        Button donate_button = (Button) mView.findViewById(R.id.donate_button);
-                        Button cancel_button = (Button) mView.findViewById(R.id.cancel_button);
-                        mBuilder.setView(mView);
-                        dialog = mBuilder.create();
-                        dialog.show();
-
-                        cancel_button.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.dismiss();
-                            }
-                        });
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/softblankie"));
+                        startActivity(browserIntent);
                     }
                 });
                 return true;
