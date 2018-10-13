@@ -2,9 +2,9 @@
 
 Android app using Java
 
-Goal:
+Goal:  
     - To create something lightweight for taking small notes quickly.
 
-Obstacles:
-    - Implementing individual functions
+Obstacles:  
+    - Implementing individual functions  
     - Desigining the layout
