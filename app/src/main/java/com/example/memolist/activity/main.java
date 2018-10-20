@@ -3,23 +3,30 @@ package com.example.memolist.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
@@ -43,6 +50,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import static com.example.memolist.data_sort.sortByAlphabet;
+import static com.example.memolist.data_sort.sortByDateEdit;
+import static com.example.memolist.data_sort.sortByImportance;
 
 public class main extends AppCompatActivity {
     protected SharedPreferences sharedPreferences;
@@ -75,6 +86,8 @@ public class main extends AppCompatActivity {
 
     protected boolean last_edit_state;
 
+    protected String string;
+
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         glob_color_scheme = sharedPreferences.getInt("color scheme", 0);
@@ -90,11 +103,177 @@ public class main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (glob_color_scheme == 1) {
+            TextView input_category_indicator = findViewById(R.id.input_category_indicator);
+            input_category_indicator.setTextColor(Color.LTGRAY);
+        }
+
         buildExListView();
         buildListView();
         buildMemoInput();
         buildSpinner();
         buildImportanceSeeker();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+
+            case R.id.action_info:
+                mView = View.inflate(this, R.layout.dialog_info, null);
+                createDialog();
+                Button ask_donate_button = mView.findViewById(R.id.ask_donate_button);
+                createConfirmButton();
+                ask_donate_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/softblankie"));
+                        startActivity(browserIntent);
+                    }
+                });
+                return true;
+
+            case R.id.action_help:
+                mView = getLayoutInflater().inflate(R.layout.dialog_help, null);
+                createDialog();
+                createConfirmButton();
+                return true;
+
+            case R.id.action_settings:
+                mView = View.inflate(this, R.layout.dialog_settings, null);
+                createDialog();
+                CheckBox showLastEdit = mView.findViewById(R.id.show_last_edit_check);
+                final TextView fontPosition = mView.findViewById(R.id.font_position);
+                SeekBar font_seeker = mView.findViewById(R.id.font_seeker);
+                final Spinner color_spinner = mView.findViewById(R.id.spinner);
+                Button clear_button = mView.findViewById(R.id.clear_button);
+                confirm_button = mView.findViewById(R.id.confirm_button);
+
+                string = "Change Font [" + glob_font_size + "]";
+                fontPosition.setText(string);
+                font_seeker.setProgress(glob_font_size - 14);
+
+                // Font settings
+                font_seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        glob_font_size =  progress + 14;
+                        string = "Change Font [" + glob_font_size + "]";
+                        fontPosition.setText(string);
+                        saveAndAdapt();
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        fontPosition.setText(string);
+                        listView.setAdapter(adapter);
+                        saveData();
+                    }
+                });
+
+                // Color settings
+                ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(this,
+                        R.array.color_scheme_list, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                color_spinner.setAdapter(spinner_adapter);
+                color_spinner.setSelection(glob_color_scheme);
+
+                // Time settings
+                showLastEdit.setChecked(last_edit_state);
+                showLastEdit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        last_edit_state = !last_edit_state;
+                        // save showLastEdit state
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("last_edit_check", last_edit_state);
+                        editor.apply();
+                    }
+                });
+
+                clear_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mView = getLayoutInflater().inflate(R.layout.dialog_confirm, null);
+                        mBuilder = new AlertDialog.Builder(main.this);
+                        mBuilder.setView(mView);
+                        confirm_dialog = mBuilder.create();
+                        confirm_dialog.show();
+                        confirm_dialog.setCanceledOnTouchOutside(false);
+                        Button yes_button = mView.findViewById(R.id.yes_button);
+                        Button no_button = mView.findViewById(R.id.no_button);
+                        yes_button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dataModels.clear();
+                                saveAndAdapt();
+                                confirm_dialog.dismiss();
+                            }
+                        });
+                        no_button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                confirm_dialog.dismiss();
+                            }
+                        });
+                    }
+                });
+
+                confirm_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if ((color_spinner.getSelectedItemPosition() == 0) &&
+                                (glob_color_scheme != color_spinner.getSelectedItemPosition())) {
+                            glob_color_scheme = 0;
+                            finish();
+                            startActivity(getIntent());
+                        } else if ((color_spinner.getSelectedItemPosition() == 1) &&
+                                (glob_color_scheme != color_spinner.getSelectedItemPosition())) {
+                            glob_color_scheme = 1;
+                            finish();
+                            startActivity(getIntent());
+                        } else if ((color_spinner.getSelectedItemPosition() == 2) &&
+                                (glob_color_scheme != color_spinner.getSelectedItemPosition())) {
+                            glob_color_scheme = 2;
+                            finish();
+                            startActivity(getIntent());
+                        }
+                        saveAndAdapt();
+                        dialog.dismiss();
+                    }
+                });
+                return true;
+
+            case R.id.sort_importance:
+                sortByImportance(dataModels, categoryDataModels);
+                saveAndAdapt();
+                return true;
+
+            case R.id.sort_alphabetical:
+                sortByAlphabet(dataModels, categoryDataModels);
+                saveAndAdapt();
+                return true;
+
+            case R.id.sort_date_edited:
+                sortByDateEdit(dataModels, categoryDataModels);
+                saveAndAdapt();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void buildExListView() {
@@ -605,8 +784,6 @@ public class main extends AppCompatActivity {
                     result=convertView;
                 }
 
-                TextView input_category_indicator = findViewById(R.id.input_category_indicator);
-
                 String color = null;
                 if ((glob_color_scheme == 0) || (glob_color_scheme == 2)) {
                     TypedArray ta = obtainStyledAttributes(R.style.ActivityTheme_Primary_Base_Light, R.styleable.MyCustomView);
@@ -615,7 +792,6 @@ public class main extends AppCompatActivity {
                     TypedArray ta = obtainStyledAttributes(R.style.ActivityTheme_Primary_Base_Dark, R.styleable.MyCustomView);
                     color = ta.getString(R.styleable.MyCustomView_primaryTextColor);
                     viewHolder.txtDateEdited.setTextColor(Color.LTGRAY);
-                    input_category_indicator.setTextColor(Color.LTGRAY);
                 }
 
                 viewHolder.txtImportance.setTextColor(Color.parseColor(color));
@@ -695,5 +871,30 @@ public class main extends AppCompatActivity {
         dialog = mBuilder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+    }
+
+    public void createDialog() {
+        mBuilder = new AlertDialog.Builder(this);
+        mBuilder.setView(mView);
+        dialog = mBuilder.create();
+        dialog.show();
+    }
+
+    protected void createConfirmButton() {
+        confirm_button = mView.findViewById(R.id.confirm_button);
+        confirm_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public void saveAndAdapt() {
+        saveData();
+        adapterOverride();
+        exAdapterOverride();
+        listView.setAdapter(adapter);
+        exListView.setAdapter(exListAdapter);
     }
 }
